@@ -25,6 +25,28 @@ var oneToManyFlowmapLayer = L.canvasFlowmapLayer(geoJsonFeatureCollection, {
       y: "y_dest",
     },
   },
+
+  // Use the library's built-in style configuration object
+  // instead of a function that returns Leaflet Path options.
+  style: {
+    originCircle: {
+      radius: 10,
+      fillStyle: "#64ffda",
+      strokeStyle: "#ffffff",
+      lineWidth: 2,
+    },
+    destinationCircle: {
+      radius: 10,
+      fillStyle: "#f50057",
+      strokeStyle: "#ffffff",
+      lineWidth: 2,
+    },
+  },
+
+  // Increase the clickable area around the nodes to match their larger size.
+  // This is necessary for the 'style' object approach.
+  nodeHoverTolerance: 12,
+
   canvasBezierStyle: {
     type: "classBreaks",
     field: "regular_movers",
@@ -84,25 +106,35 @@ var oneToManyFlowmapLayer = L.canvasFlowmapLayer(geoJsonFeatureCollection, {
       lineDashOffsetSize: 4,
     },
   },
-  pathDisplayMode: "selection",
-  animationStarted: true,
+  pathDisplayMode: "selection", // 'all' or 'selection'
+  animationStarted: true, // auto-start animation
 }).addTo(map);
 
 // Selection for dispaly
 oneToManyFlowmapLayer.on("click", function (e) {
-  // clear any selections before displaying new ones
-  oneToManyFlowmapLayer.clearAllPathSelections();
+  // if the layer is already selected, clear the selection
+  if (
+    (e.sharedOriginFeatures.length &&
+      e.sharedOriginFeatures[0].properties._isSelectedForPathDisplay) ||
+    (e.sharedDestinationFeatures.length &&
+      e.sharedDestinationFeatures[0].properties._isSelectedForPathDisplay)
+  ) {
+    oneToManyFlowmapLayer.clearAllPathSelections();
+  } else {
+    // otherwise, clear any previous selections and show the new one
+    oneToManyFlowmapLayer.clearAllPathSelections();
 
-  if (e.sharedOriginFeatures.length) {
-    oneToManyFlowmapLayer.selectFeaturesForPathDisplay(
-      e.sharedOriginFeatures,
-      "SELECTION_NEW"
-    );
-  } else if (e.sharedDestinationFeatures.length) {
-    oneToManyFlowmapLayer.selectFeaturesForPathDisplay(
-      e.sharedDestinationFeatures,
-      "SELECTION_NEW"
-    );
+    if (e.sharedOriginFeatures.length) {
+      oneToManyFlowmapLayer.selectFeaturesForPathDisplay(
+        e.sharedOriginFeatures,
+        "SELECTION_NEW"
+      );
+    } else if (e.sharedDestinationFeatures.length) {
+      oneToManyFlowmapLayer.selectFeaturesForPathDisplay(
+        e.sharedDestinationFeatures,
+        "SELECTION_NEW"
+      );
+    }
   }
 });
 
