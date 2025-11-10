@@ -95,8 +95,7 @@ oneToManyFlowmapLayer.on("click", function (e) {
       e.sharedOriginFeatures,
       "SELECTION_NEW"
     );
-  }
-  if (e.sharedDestinationFeatures.length) {
+  } else if (e.sharedDestinationFeatures.length) {
     oneToManyFlowmapLayer.selectFeaturesForPathDisplay(
       e.sharedDestinationFeatures,
       "SELECTION_NEW"
