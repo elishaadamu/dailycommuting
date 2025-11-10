@@ -90,6 +90,9 @@ var oneToManyFlowmapLayer = L.canvasFlowmapLayer(geoJsonFeatureCollection, {
 
 // Selection for dispaly
 oneToManyFlowmapLayer.on("click", function (e) {
+  // clear any selections before displaying new ones
+  oneToManyFlowmapLayer.clearAllPathSelections();
+
   if (e.sharedOriginFeatures.length) {
     oneToManyFlowmapLayer.selectFeaturesForPathDisplay(
       e.sharedOriginFeatures,
